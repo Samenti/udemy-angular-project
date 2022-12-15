@@ -1,5 +1,4 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { CurrentTab } from '../app.component';
 
 @Component({
   selector: 'app-header',
@@ -7,13 +6,13 @@ import { CurrentTab } from '../app.component';
 })
 export class HeaderComponent implements OnInit {
   collapsed = true;
-  @Output() navButtonClicked = new EventEmitter<CurrentTab>();
+  @Output() featureSelected = new EventEmitter<string>();
 
   constructor() {}
 
   ngOnInit(): void {}
 
-  public onNavClick(navLink: CurrentTab) {
-    this.navButtonClicked.emit(navLink);
+  onSelect(feature: string) {
+    this.featureSelected.emit(feature);
   }
 }

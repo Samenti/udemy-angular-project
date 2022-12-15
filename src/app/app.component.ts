@@ -8,5 +8,9 @@ export type CurrentTab = 'shopping-list' | 'recipes';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-  currentTab: CurrentTab = 'recipes';
+  loadedFeature = 'recipe';
+
+  onNavigate(feature: string) {
+    this.loadedFeature = feature;
+  }
 }

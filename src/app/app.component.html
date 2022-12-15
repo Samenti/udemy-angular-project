@@ -1,11 +1,9 @@
-<app-header (navButtonClicked)="currentTab = $event"></app-header>
+<app-header (featureSelected)="onNavigate($event)"></app-header>
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <ng-container [ngSwitch]="currentTab">
-        <app-recipes *ngSwitchCase="'recipes'"></app-recipes>
-        <app-shopping-list *ngSwitchCase="'shopping-list'"></app-shopping-list>
-      </ng-container>
+      <app-recipes *ngIf="loadedFeature === 'recipe'"></app-recipes>
+      <app-shopping-list *ngIf="loadedFeature !== 'recipe'"></app-shopping-list>
     </div>
   </div>
 </div>
