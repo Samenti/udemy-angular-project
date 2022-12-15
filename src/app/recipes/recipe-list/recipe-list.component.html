@@ -9,6 +9,8 @@
     <app-recipe-item
       *ngFor="let recipeEl of recipes"
       [recipe]="recipeEl"
+      [isSelected]="!!selectedRecipe && recipeEl.name === selectedRecipe.name"
+      (recipeClicked)="recipeSelected.emit(recipeEl.name)"
     ></app-recipe-item>
   </div>
 </div>
