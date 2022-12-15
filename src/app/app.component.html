@@ -1,9 +1,11 @@
-<app-header></app-header>
+<app-header (navButtonClicked)="currentTab = $event"></app-header>
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <app-recipes></app-recipes>
-      <app-shopping-list></app-shopping-list>
+      <ng-container [ngSwitch]="currentTab">
+        <app-recipes *ngSwitchCase="'recipes'"></app-recipes>
+        <app-shopping-list *ngSwitchCase="'shopping-list'"></app-shopping-list>
+      </ng-container>
     </div>
   </div>
 </div>
