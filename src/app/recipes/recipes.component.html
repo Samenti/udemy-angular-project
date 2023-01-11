@@ -3,7 +3,6 @@
     <app-recipe-list></app-recipe-list>
   </div>
   <div class="col-md-7">
-    <router-outlet #currentRoute="outlet"></router-outlet>
-    <p *ngIf="!currentRoute.activated">Please select a Recipe!</p>
+    <router-outlet></router-outlet>
   </div>
 </div>

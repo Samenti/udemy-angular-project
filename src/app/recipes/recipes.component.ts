@@ -1,6 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { Route } from '@angular/router';
-import { Recipe } from './recipe.model';
+import { Component } from '@angular/core';
 import { RecipeService } from './recipe.service';
 
 @Component({
@@ -9,15 +7,4 @@ import { RecipeService } from './recipe.service';
   styleUrls: ['./recipes.component.css'],
   providers: [RecipeService],
 })
-export class RecipesComponent implements OnInit {
-  selectedRecipe: Recipe;
-  @ViewChild('currentRoute') currentRoute: Route;
-
-  constructor(private recipeService: RecipeService) {}
-
-  ngOnInit(): void {
-    this.recipeService.recipeSelected.subscribe((recipe: Recipe) => {
-      this.selectedRecipe = recipe;
-    });
-  }
-}
+export class RecipesComponent {}
