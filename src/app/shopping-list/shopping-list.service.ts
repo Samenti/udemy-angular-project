@@ -38,4 +38,12 @@ export class ShoppingListService {
     this.ingredients[index] = newIngredient;
     this.ingredientsChanged.next(this.ingredients.slice());
   }
+
+  deleteIngredient(idx: number) {
+    // const newIngredients = this.ingredients.filter((_, index) => index !== idx);
+    // this.ingredients = newIngredients;
+    // this.ingredientsChanged.next(newIngredients);
+    this.ingredients.splice(idx, 1);
+    this.ingredientsChanged.next(this.ingredients.slice());
+  }
 }
