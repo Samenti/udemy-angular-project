@@ -33,6 +33,7 @@
           <div class="form-group">
             <label for="imagePath">Image URL</label>
             <input
+              #imagePath
               type="text"
               id="imagePath"
               class="form-control"
@@ -41,9 +42,9 @@
           </div>
         </div>
       </div>
-      <div class="row">
+      <div *ngIf="imagePath.value" class="row">
         <div class="col-xs-12">
-          <img src="" alt="" class="img-responsive" />
+          <img [src]="imagePath.value" alt="preview" class="img-responsive" />
         </div>
       </div>
       <div class="row">
@@ -85,7 +86,11 @@
           <hr />
           <div class="row">
             <div class="col-xs-12">
-              <button class="btn btn-success" (click)="onAddIngredient()">
+              <button
+                type="button"
+                class="btn btn-success"
+                (click)="onAddIngredient()"
+              >
                 Add Ingredient
               </button>
             </div>

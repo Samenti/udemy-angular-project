@@ -21,6 +21,12 @@ export class RecipeService {
       'https://upload.wikimedia.org/wikipedia/commons/b/be/Burger_King_Angus_Bacon_%26_Cheese_Steak_Burger.jpg',
       [new Ingredient('Buns', 2), new Ingredient('Meat', 1)]
     ),
+    // new Recipe(
+    //   'Spaghetti!!!',
+    //   'Very tasty!',
+    //   'https://upload.wikimedia.org/wikipedia/commons/2/2a/Spaghetti_al_Pomodoro.JPG',
+    //   [new Ingredient('Spaghetti', 100), new Ingredient('Tomatoes', 3)]
+    // ),
   ];
 
   constructor(private slService: ShoppingListService) {}
