@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { AuthService } from './auth/auth.service';
 
 export type CurrentTab = 'shopping-list' | 'recipes';
 
@@ -7,4 +8,10 @@ export type CurrentTab = 'shopping-list' | 'recipes';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent {}
+export class AppComponent implements OnInit {
+  constructor(private authService: AuthService) {}
+
+  ngOnInit(): void {
+    this.authService.autoLogin();
+  }
+}
