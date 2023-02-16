@@ -26,30 +26,23 @@ export class DataStorageService {
   }
 
   fetchRecipes(): Observable<Recipe[]> {
-    return this.authService.user.pipe(
-      // take(1) takes the latest value from the observable and immediately unsubscribes
-      take(1),
-      // here exhaustMap subscribes to an outer observable (user) and executes a mapping function
-      // that returns an inner observable (http request); it passes down the combined signal when
-      // both observables complete
-      exhaustMap((user) => {
-        return this.http.get<Recipe[]>(
-          'https://udemy-angular-project-d838f-default-rtdb.europe-west1.firebasedatabase.app/recipes.json',
-          { params: new HttpParams().set('auth', user.token) }
-        );
-      }),
-      // set the ingredients to an empty array if it doesn't exist
-      map((recipes) => {
-        return recipes.map((recipe) => {
-          return {
-            ...recipe,
-            ingredients: recipe.ingredients ? recipe.ingredients : [],
-          };
-        });
-      }),
-      tap((recipes) => {
-        this.recipeService.setRecipes(recipes);
-      })
-    );
+    return this.http
+      .get<Recipe[]>(
+        'https://udemy-angular-project-d838f-default-rtdb.europe-west1.firebasedatabase.app/recipes.json'
+      )
+      .pipe(
+        // set the ingredients to an empty array if it doesn't exist
+        map((recipes) => {
+          return recipes.map((recipe) => {
+            return {
+              ...recipe,
+              ingredients: recipe.ingredients ? recipe.ingredients : [],
+            };
+          });
+        }),
+        tap((recipes) => {
+          this.recipeService.setRecipes(recipes);
+        })
+      );
   }
 }
