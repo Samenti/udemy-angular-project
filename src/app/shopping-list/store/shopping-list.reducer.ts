@@ -35,24 +35,40 @@ const initialState: State = {
 //         ingredients: [...state.ingredients, ...action.payload],
 //       };
 //     case ShoppingListActions.UPDATE_INGREDIENT:
-//       const ingredient = state.ingredients[action.payload.index];
+//       const ingredient = state.ingredients[state.editedIngredientIndex];
 //       const updatedIngredient = {
 //         ...ingredient,
-//         ...action.payload.ingredient,
+//         ...action.payload,
 //       };
 //       const updatedIngredients = [...state.ingredients];
-//       updatedIngredients[action.payload.index] = updatedIngredient;
+//       updatedIngredients[state.editedIngredientIndex] = updatedIngredient;
 
 //       return {
 //         ...state,
 //         ingredients: updatedIngredients,
+//         editedIngredientIndex: -1,
+//         editedIngredient: null,
 //       };
 //     case ShoppingListActions.DELETE_INGREDIENT:
 //       return {
 //         ...state,
 //         ingredients: state.ingredients.filter(
-//           (_, index) => index != action.payload
+//           (_, index) => index != state.editedIngredientIndex
 //         ),
+//         editedIngredientIndex: -1,
+//         editedIngredient: null,
+//       };
+//     case ShoppingListActions.START_EDIT:
+//       return {
+//         ...state,
+//         editedIngredientIndex: action.payload,
+//         editedIngredient: { ...state.ingredients[action.payload] },
+//       };
+//     case ShoppingListActions.STOP_EDIT:
+//       return {
+//         ...state,
+//         editedIngredientIndex: -1,
+//         editedIngredient: null,
 //       };
 
 //     default:
@@ -71,21 +87,35 @@ export const shoppingListReducer = createReducer(
     ...state,
     ingredients: [...state.ingredients, ...ingredients],
   })),
-  on(ShoppingListActions.updateIngredient, (state, { index, ingredient }) => {
+  on(ShoppingListActions.updateIngredient, (state, { ingredient }) => {
     const updatedIngredient = {
-      ...state.ingredients[index],
+      ...state.ingredients[state.editedIngredientIndex],
       ...ingredient,
     };
     const updatedIngredients = [...state.ingredients];
-    updatedIngredients[index] = updatedIngredient;
+    updatedIngredients[state.editedIngredientIndex] = updatedIngredient;
 
     return {
       ...state,
+      editedIngredientIndex: -1,
+      editedIngredient: null,
       ingredients: updatedIngredients,
     };
   }),
-  on(ShoppingListActions.deleteIngredient, (state, { index }) => ({
+  on(ShoppingListActions.deleteIngredient, (state) => ({
     ...state,
-    ingredients: state.ingredients.filter((_, idx) => index != idx),
+    ingredients: state.ingredients.filter(
+      (_, index) => index != state.editedIngredientIndex
+    ),
+  })),
+  on(ShoppingListActions.startEdit, (state, { index }) => ({
+    ...state,
+    editedIngredientIndex: index,
+    editedIngredient: { ...state.ingredients[index] },
+  })),
+  on(ShoppingListActions.stopEdit, (state) => ({
+    ...state,
+    editedIngredientIndex: -1,
+    editedIngredient: null,
   }))
 );
