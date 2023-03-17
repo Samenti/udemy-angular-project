@@ -9,7 +9,7 @@ const initialState = {
 // *** old Redux-like syntax ***
 // export function shoppingListReducer(
 //   state = initialState,
-//   action: ShoppingListActions.AddIngredient
+//   action: ShoppingListActions.ShoppingListActions
 // ) {
 //   switch (action.type) {
 //     case ShoppingListActions.ADD_INGREDIENT:
@@ -17,6 +17,12 @@ const initialState = {
 //         ...state,
 //         ingredients: [...state.ingredients, action.payload],
 //       };
+//     case ShoppingListActions.ADD_INGREDIENTS:
+//       return {
+//         ...state,
+//         ingredients: [...state.ingredients, ...action.payload],
+//       };
+
 //     default:
 //       return state;
 //   }
@@ -28,5 +34,9 @@ export const shoppingListReducer = createReducer(
   on(ShoppingListActions.addIngredient, (state, { ingredient }) => ({
     ...state,
     ingredients: [...state.ingredients, ingredient],
+  })),
+  on(ShoppingListActions.addIngredients, (state, { ingredients }) => ({
+    ...state,
+    ingredients: [...state.ingredients, ...ingredients],
   }))
 );
