@@ -5,17 +5,19 @@ import {
   HttpRequest,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { exhaustMap, take } from 'rxjs';
-import { AuthService } from './auth.service';
+import { Store } from '@ngrx/store';
+import { exhaustMap, map, take } from 'rxjs';
+import * as fromAppStore from 'src/app/store/app.reducer';
 
 @Injectable()
 export class AuthInterceptorService implements HttpInterceptor {
-  constructor(private authService: AuthService) {}
+  constructor(private store: Store<fromAppStore.AppState>) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler) {
-    return this.authService.user.pipe(
+    return this.store.select('auth').pipe(
       // take(1) takes the latest value from the observable and immediately unsubscribes
       take(1),
+      map((authState) => authState.user),
       // here exhaustMap subscribes to an outer observable (user) and executes a mapping function
       // that returns an inner observable (http request); it passes down the combined signal when
       // both observables complete
