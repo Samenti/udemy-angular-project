@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import * as AuthActions from './auth.actions';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 
 export interface AuthResponseData {
   kind: string;
@@ -51,7 +52,7 @@ export class AuthEffects {
   //   })
   // );
 
-  // *** new syntax ***
+  // *** new syntax with createEffect ***
   authLogin$ = createEffect(() =>
     this.actions$.pipe(
       // *** old syntax ***
@@ -70,12 +71,39 @@ export class AuthEffects {
       //     .pipe(
       //       map((resData) => {
       //         return {
-      //           type: AuthActions.LOGIN_START,
+      //           type: AuthActions.LOGIN,
       //           payload: resData,
       //         };
       //       }),
-      //       catchError((error) => {
-      //         return of();
+      //       catchError((errorRes) => {
+      //         let errorMessage = 'An unknown error occurred!';
+      //         if (!errorRes.error || !errorRes.error.error) {
+      //           return of(new AuthActions.LoginFail(errorMessage));
+      //         }
+      //         switch (errorRes.error.error.message) {
+      //           // common signup errors:
+      //           case 'EMAIL_EXISTS':
+      //             errorMessage = 'This email exists already';
+      //             break;
+      //           case 'TOO_MANY_ATTEMPTS_TRY_LATER':
+      //             errorMessage =
+      //               'You have tried too many times in a short while. Try again later!';
+      //             break;
+      //           case 'OPERATION_NOT_ALLOWED':
+      //             errorMessage = 'Sign up with email and password is disabled';
+      //             break;
+      //           // common login errors:
+      //           case 'EMAIL_NOT_FOUND':
+      //             errorMessage = 'This email does not exist.';
+      //             break;
+      //           case 'INVALID_PASSWORD':
+      //             errorMessage = 'This password is not correct.';
+      //             break;
+      //           case 'USER_DISABLED':
+      //             errorMessage = 'This user has been disabled.';
+      //             break;
+      //         }
+      //         return of(new AuthActions.LoginFail(errorMessage));
       //       })
       //     );
       // })
@@ -95,17 +123,63 @@ export class AuthEffects {
           .pipe(
             map((resData) => {
               return {
-                type: AuthActions.loginStart.type,
+                type: AuthActions.login.type,
                 payload: resData,
               };
             }),
-            catchError((error) => {
-              return of();
+            catchError((errorRes) => {
+              let errorMessage = 'An unknown error occurred!';
+              if (!errorRes.error || !errorRes.error.error) {
+                return of(AuthActions.loginFail({ error: errorMessage }));
+              }
+              switch (errorRes.error.error.message) {
+                // common signup errors:
+                case 'EMAIL_EXISTS':
+                  errorMessage = 'This email exists already';
+                  break;
+                case 'TOO_MANY_ATTEMPTS_TRY_LATER':
+                  errorMessage =
+                    'You have tried too many times in a short while. Try again later!';
+                  break;
+                case 'OPERATION_NOT_ALLOWED':
+                  errorMessage = 'Sign up with email and password is disabled';
+                  break;
+                // common login errors:
+                case 'EMAIL_NOT_FOUND':
+                  errorMessage = 'This email does not exist.';
+                  break;
+                case 'INVALID_PASSWORD':
+                  errorMessage = 'This password is not correct.';
+                  break;
+                case 'USER_DISABLED':
+                  errorMessage = 'This user has been disabled.';
+                  break;
+              }
+              return of(AuthActions.loginFail({ error: errorMessage }));
             })
           );
       })
     )
   );
 
-  constructor(private actions$: Actions, private http: HttpClient) {}
+  authSuccess$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        // *** old syntax ***
+        // ofType(AuthActions.LOGIN),
+        // *** new syntax ***
+        ofType(AuthActions.login),
+
+        tap(() => {
+          this.router.navigate(['/']);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  constructor(
+    private actions$: Actions,
+    private http: HttpClient,
+    private router: Router
+  ) {}
 }

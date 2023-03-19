@@ -22,7 +22,7 @@ import * as AuthActions from './store/auth.actions';
 export class AuthComponent implements OnInit, OnDestroy {
   isLoginMode = true;
   isLoading = false;
-  // error: string | null = null;
+  error: string = null;
   // this will find the first occurrence of the PlaceholderDirective type
   // in the template
   @ViewChild(PlaceholderDirective, { static: false })
@@ -36,7 +36,15 @@ export class AuthComponent implements OnInit, OnDestroy {
     private store: Store<fromAppStore.AppState>
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.store.select('auth').subscribe((authState) => {
+      this.isLoading = authState.loading;
+      this.error = authState.authError;
+      if (this.error) {
+        this.showErrorAlert(this.error);
+      }
+    });
+  }
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
@@ -62,19 +70,19 @@ export class AuthComponent implements OnInit, OnDestroy {
       authObs = this.authService.signup(email, password);
     }
 
-    authObs.subscribe({
-      next: (resData) => {
-        console.log(resData);
-        this.isLoading = false;
-        this.router.navigate(['/recipes']);
-      },
-      error: (error) => {
-        console.log(error);
-        // this.error = error.message;
-        this.showErrorAlert(error.message);
-        this.isLoading = false;
-      },
-    });
+    // authObs.subscribe({
+    //   next: (resData) => {
+    //     console.log(resData);
+    //     this.isLoading = false;
+    //     this.router.navigate(['/recipes']);
+    //   },
+    //   error: (error) => {
+    //     console.log(error);
+    //     // this.error = error.message;
+    //     this.showErrorAlert(error.message);
+    //     this.isLoading = false;
+    //   },
+    // });
     form.reset();
   }
 
