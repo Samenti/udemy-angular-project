@@ -20,7 +20,7 @@ const initialState: State = {
 //   action: AuthActions.AuthActions
 // ) {
 //   switch (action.type) {
-//     case AuthActions.LOGIN:
+//     case AuthActions.AUTHENTICATE_SUCCESS:
 //       const user = new User(
 //         action.payload.email,
 //         action.payload.userId,
@@ -44,12 +44,18 @@ const initialState: State = {
 //         authError: null,
 //         loading: true,
 //       };
-//     case AuthActions.LOGIN_FAIL:
+//     case AuthActions.AUTHENTICATE_FAIL:
 //       return {
 //         ...state,
 //         user: null,
 //         authError: action.payload,
 //         loading: false,
+//       };
+//     case AuthActions.SIGNUP_START:
+//       return {
+//         ...state,
+//         authError: null,
+//         loading: true,
 //       };
 //     default:
 //       return state;
@@ -59,15 +65,18 @@ const initialState: State = {
 // *** new syntax ***
 export const authReducer = createReducer(
   initialState,
-  on(AuthActions.login, (state, { email, userId, token, expirationDate }) => {
-    const user = new User(email, userId, token, expirationDate);
-    return {
-      ...state,
-      user,
-      authError: null,
-      loading: false,
-    };
-  }),
+  on(
+    AuthActions.authenticateSuccess,
+    (state, { email, userId, token, expirationDate }) => {
+      const user = new User(email, userId, token, expirationDate);
+      return {
+        ...state,
+        user,
+        authError: null,
+        loading: false,
+      };
+    }
+  ),
   on(AuthActions.logout, (state) => ({
     ...state,
     user: null,
@@ -77,10 +86,15 @@ export const authReducer = createReducer(
     authError: null,
     loading: true,
   })),
-  on(AuthActions.loginFail, (state, { error }) => ({
+  on(AuthActions.authenticateFail, (state, { error }) => ({
     ...state,
     user: null,
     authError: error,
     loading: false,
+  })),
+  on(AuthActions.signupStart, (state) => ({
+    ...state,
+    authError: null,
+    loading: true,
   }))
 );

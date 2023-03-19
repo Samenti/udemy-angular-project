@@ -103,7 +103,7 @@ export class AuthService {
       // this.user.next(loadedUser);
       // *** old syntax ***
       // this.store.dispatch(
-      //   new AuthActions.Login({
+      //   new AuthActions.AuthenticateSuccess({
       //     email: loadedUser.email,
       //     userId: loadedUser.id,
       //     token: loadedUser.token,
@@ -112,7 +112,7 @@ export class AuthService {
       // );
       // *** new syntax ***
       this.store.dispatch(
-        AuthActions.login({
+        AuthActions.authenticateSuccess({
           email: loadedUser.email,
           userId: loadedUser.id,
           token: loadedUser.token,
@@ -158,11 +158,16 @@ export class AuthService {
     // this.user.next(user);
     // *** old syntax ***
     // this.store.dispatch(
-    //   new AuthActions.Login({ email, userId, token, expirationDate })
+    //   new AuthActions.AuthenticateSuccess({
+    //     email,
+    //     userId,
+    //     token,
+    //     expirationDate,
+    //   })
     // );
     // *** new syntax ***
     this.store.dispatch(
-      AuthActions.login({ email, userId, token, expirationDate })
+      AuthActions.authenticateSuccess({ email, userId, token, expirationDate })
     );
 
     this.autoLogout(expiresIn * 1000);
