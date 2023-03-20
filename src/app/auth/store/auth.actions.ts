@@ -6,6 +6,8 @@ import { Action, createAction, props } from '@ngrx/store';
 // export const AUTHENTICATE_FAIL = '[Auth] Authenticate Fail';
 // export const SIGNUP_START = '[Auth] Signup Start';
 // export const LOGOUT = '[Auth] Logout';
+// export const CLEAR_ERROR = '[Auth] Clear Error';
+// export const AUTO_LOGIN = '[Auth] Auto Login';
 
 // export class AuthenticateSuccess implements Action {
 //   readonly type = AUTHENTICATE_SUCCESS;
@@ -42,12 +44,22 @@ import { Action, createAction, props } from '@ngrx/store';
 //   constructor(public payload: { email: string; password: string }) {}
 // }
 
+// export class ClearError implements Action {
+//   readonly type = CLEAR_ERROR;
+// }
+
+// export class AutoLogin implements Action {
+//   readonly type = AUTO_LOGIN;
+// }
+
 // export type AuthActions =
 //   | AuthenticateSuccess
 //   | Logout
 //   | LoginStart
 //   | AuthenticateFail
-//   | SignupStart;
+//   | SignupStart
+//   | ClearError
+//   | AutoLogin;
 
 // *** new syntax ***
 export const authenticateSuccess = createAction(
@@ -76,3 +88,7 @@ export const signupStart = createAction(
   '[Auth] Signup Start',
   props<{ email: string; password: string }>()
 );
+
+export const clearError = createAction('[Auth] Clear Error');
+
+export const autoLogin = createAction('[Auth] Auto Login');

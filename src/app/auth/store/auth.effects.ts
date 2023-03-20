@@ -5,6 +5,8 @@ import { environment } from 'src/environments/environment';
 import * as AuthActions from './auth.actions';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { User } from '../user.model';
+import { AuthService } from '../auth.service';
 
 export interface AuthResponseData {
   kind: string;
@@ -23,16 +25,15 @@ const handleAuthentication = (
   token: string
 ) => {
   const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
+  const user = new User(email, userId, token, expirationDate);
+  localStorage.setItem('userData', JSON.stringify(user));
   // *** old syntax ***
-  // return {
-  //   type: AuthActions.AUTHENTICATE_SUCCESS,
-  //   payload: {
-  //     email,
-  //     userId,
-  //     token,
-  //     expirationDate,
-  //   },
-  // };
+  // return new AuthActions.AuthenticateSuccess({
+  //   email,
+  //   userId,
+  //   token,
+  //   expirationDate,
+  // });
   // *** new syntax ***
   return AuthActions.authenticateSuccess({
     email,
@@ -157,6 +158,9 @@ export class AuthEffects {
             }
           )
           .pipe(
+            tap((resData) =>
+              this.authService.setLogoutTimer(+resData.expiresIn * 1000)
+            ),
             map((resData) =>
               handleAuthentication(
                 +resData.expiresIn,
@@ -171,7 +175,7 @@ export class AuthEffects {
     )
   );
 
-  authSuccess$ = createEffect(
+  authRedirect$ = createEffect(
     () =>
       this.actions$.pipe(
         // *** old syntax ***
@@ -227,6 +231,9 @@ export class AuthEffects {
             }
           )
           .pipe(
+            tap((resData) =>
+              this.authService.setLogoutTimer(+resData.expiresIn * 1000)
+            ),
             map((resData) =>
               handleAuthentication(
                 +resData.expiresIn,
@@ -241,9 +248,76 @@ export class AuthEffects {
     )
   );
 
+  authLogout$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        // *** old syntax ***
+        // ofType(AuthActions.LOGOUT),
+        // *** new syntax ***
+        ofType(AuthActions.logout),
+        tap(() => {
+          this.authService.clearLogoutTimer();
+          localStorage.removeItem('userData');
+          this.router.navigate(['/auth']);
+        })
+      ),
+    { dispatch: false }
+  );
+
+  autoLogin$ = createEffect(() =>
+    this.actions$.pipe(
+      // *** old syntax ***
+      // ofType(AuthActions.AUTO_LOGIN),
+      // *** new syntax ***
+      ofType(AuthActions.autoLogin),
+      map(() => {
+        const userData: {
+          email: string;
+          id: string;
+          _token: string;
+          _tokenExpirationDate: string;
+        } = JSON.parse(localStorage.getItem('userData'));
+
+        if (!userData) {
+          return { type: 'DUMMY' };
+        }
+
+        const loadedUser = new User(
+          userData.email,
+          userData.id,
+          userData._token,
+          new Date(userData._tokenExpirationDate)
+        );
+
+        if (loadedUser.token) {
+          const expirationDuration =
+            new Date(userData._tokenExpirationDate).getTime() -
+            new Date().getTime();
+          this.authService.setLogoutTimer(expirationDuration);
+          // *** old syntax ***
+          // return new AuthActions.AuthenticateSuccess({
+          //   email: loadedUser.email,
+          //   userId: loadedUser.id,
+          //   token: loadedUser.token,
+          //   expirationDate: new Date(userData._tokenExpirationDate),
+          // });
+          // *** new syntax ***
+          return AuthActions.authenticateSuccess({
+            email: loadedUser.email,
+            userId: loadedUser.id,
+            token: loadedUser.token,
+            expirationDate: new Date(userData._tokenExpirationDate),
+          });
+        }
+        return { type: 'DUMMY' };
+      })
+    )
+  );
+
   constructor(
     private actions$: Actions,
     private http: HttpClient,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {}
 }

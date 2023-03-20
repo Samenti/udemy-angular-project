@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AuthService } from './auth/auth.service';
-import { LoggingService } from './logging.service';
+import { Component, OnInit } from '@angular/core';
+import * as fromAppStore from './store/app.reducer';
+import * as AuthActions from './auth/store/auth.actions';
+import { Store } from '@ngrx/store';
 
 export type CurrentTab = 'shopping-list' | 'recipes';
 
@@ -10,13 +11,12 @@ export type CurrentTab = 'shopping-list' | 'recipes';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  constructor(
-    private authService: AuthService
-  ) // private loggingService: LoggingService
-  {}
+  constructor(private store: Store<fromAppStore.AppState>) {}
 
   ngOnInit(): void {
-    this.authService.autoLogin();
-    // this.loggingService.printLog('Hello from AppComponent ngOnInit!');
+    // *** old syntax ***
+    // this.store.dispatch(new AuthActions.AutoLogin());
+    // *** new syntax ***
+    this.store.dispatch(AuthActions.autoLogin());
   }
 }

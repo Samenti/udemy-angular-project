@@ -38,6 +38,7 @@ const initialState: State = {
 //         ...state,
 //         user: null,
 //       };
+//     case AuthActions.SIGNUP_START:
 //     case AuthActions.LOGIN_START:
 //       return {
 //         ...state,
@@ -51,11 +52,10 @@ const initialState: State = {
 //         authError: action.payload,
 //         loading: false,
 //       };
-//     case AuthActions.SIGNUP_START:
+//     case AuthActions.CLEAR_ERROR:
 //       return {
 //         ...state,
 //         authError: null,
-//         loading: true,
 //       };
 //     default:
 //       return state;
@@ -81,7 +81,7 @@ export const authReducer = createReducer(
     ...state,
     user: null,
   })),
-  on(AuthActions.loginStart, (state) => ({
+  on(AuthActions.loginStart, AuthActions.signupStart, (state) => ({
     ...state,
     authError: null,
     loading: true,
@@ -92,9 +92,8 @@ export const authReducer = createReducer(
     authError: error,
     loading: false,
   })),
-  on(AuthActions.signupStart, (state) => ({
+  on(AuthActions.clearError, (state) => ({
     ...state,
     authError: null,
-    loading: true,
   }))
 );
