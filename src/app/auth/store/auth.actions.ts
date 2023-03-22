@@ -18,6 +18,7 @@ import { Action, createAction, props } from '@ngrx/store';
 //       userId: string;
 //       token: string;
 //       expirationDate: Date;
+//       redirect: boolean;
 //     }
 //   ) {}
 // }
@@ -69,6 +70,7 @@ export const authenticateSuccess = createAction(
     userId: string;
     token: string;
     expirationDate: Date;
+    redirect: boolean;
   }>()
 );
 

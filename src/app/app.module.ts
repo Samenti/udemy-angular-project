@@ -14,6 +14,7 @@ import { CoreModule } from './core.module';
 import * as fromAppStore from './store/app.reducer';
 import { AuthEffects } from './auth/store/auth.effects';
 import { environment } from 'src/environments/environment';
+import { RecipesEffects } from './recipes/store/recipes.effects';
 // import { LoggingService } from './logging.service';
 
 @NgModule({
@@ -23,7 +24,7 @@ import { environment } from 'src/environments/environment';
     BrowserModule,
     HttpClientModule,
     StoreModule.forRoot(fromAppStore.appReducer),
-    EffectsModule.forRoot([AuthEffects]),
+    EffectsModule.forRoot([AuthEffects, RecipesEffects]),
     StoreDevtoolsModule.instrument({ logOnly: environment.production }),
     StoreRouterConnectingModule.forRoot(),
     AppRoutingModule,

@@ -14,27 +14,25 @@ import * as fromAppStore from 'src/app/store/app.reducer';
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
   @ViewChild('f', { static: false }) slForm: NgForm;
-  subscription: Subscription;
+  storeSub: Subscription;
   editMode = false;
   editedItem: Ingredient;
 
   constructor(private store: Store<fromAppStore.AppState>) {}
 
   ngOnInit(): void {
-    this.subscription = this.store
-      .select('shoppingList')
-      .subscribe((stateData) => {
-        if (stateData.editedIngredientIndex > -1) {
-          this.editMode = true;
-          this.editedItem = stateData.editedIngredient;
-          this.slForm.setValue({
-            name: this.editedItem.name,
-            amount: this.editedItem.amount,
-          });
-        } else {
-          this.editMode = false;
-        }
-      });
+    this.storeSub = this.store.select('shoppingList').subscribe((stateData) => {
+      if (stateData.editedIngredientIndex > -1) {
+        this.editMode = true;
+        this.editedItem = stateData.editedIngredient;
+        this.slForm.setValue({
+          name: this.editedItem.name,
+          amount: this.editedItem.amount,
+        });
+      } else {
+        this.editMode = false;
+      }
+    });
   }
 
   onAddItem(form: NgForm) {
@@ -81,7 +79,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.storeSub.unsubscribe();
     // *** old syntax ***
     // this.store.dispatch(new ShoppingListActions.StopEdit());
     // *** new syntax ***
