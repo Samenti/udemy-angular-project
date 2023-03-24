@@ -276,7 +276,7 @@ export class AuthEffects {
       // *** old syntax ***
       // ofType(AuthActions.AUTO_LOGIN),
       // *** new syntax ***
-      ofType(AuthActions.autoLogin),
+      ofType(AuthActions.autoLoginStart),
       map(() => {
         const userData: {
           email: string;
@@ -286,7 +286,7 @@ export class AuthEffects {
         } = JSON.parse(localStorage.getItem('userData'));
 
         if (!userData) {
-          return { type: 'DUMMY' };
+          return AuthActions.autoLoginFail();
         }
 
         const loadedUser = new User(
@@ -317,7 +317,7 @@ export class AuthEffects {
             redirect: false,
           });
         }
-        return { type: 'DUMMY' };
+        return AuthActions.autoLoginFail();
       })
     )
   );

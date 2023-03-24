@@ -11,17 +11,34 @@ import { Actions, ofType } from '@ngrx/effects';
 // })
 // export class RecipesResolverService implements Resolve<Recipe[]> {
 //   constructor(
-//     private dataStorageService: DataStorageService,
-//     private recipeService: RecipeService
+//     private store: Store<fromAppStore.AppState>,
+//     private actions$: Actions
 //   ) {}
 
-//   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-//     const recipes = this.recipeService.getRecipes();
-//     if (recipes.length === 0) {
-//       return this.dataStorageService.fetchRecipes();
-//     } else {
-//       return recipes;
-//     }
+//   resolve(
+//     route: ActivatedRouteSnapshot,
+//     state: RouterStateSnapshot
+//   ): Recipe[] | Observable<Recipe[]> | Promise<Recipe[]> {
+//     return this.store.select('recipes').pipe(
+//       take(1),
+//       map((recipesState) => recipesState.recipes),
+//       switchMap((recipes) => {
+//         if (recipes.length === 0) {
+//           // *** old syntax ***
+//           // store.dispatch(new RecipesActions.FetchRecipes());
+//           // return actions$.pipe(ofType(RecipesActions.SET_RECIPES), take(1));
+//           // *** new syntax ***
+//           this.store.dispatch(RecipesActions.fetchRecipes());
+//           return this.actions$.pipe(
+//             ofType(RecipesActions.setRecipes),
+//             take(1),
+//             map((setRecipesAction) => setRecipesAction.recipes)
+//           );
+//         } else {
+//           return of(recipes);
+//         }
+//       })
+//     );
 //   }
 // }
 
@@ -29,7 +46,7 @@ export const recipesResolver = (
   route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot
 ) => {
-  const store = inject(Store<fromAppStore.AppState>);
+  const store: Store<fromAppStore.AppState> = inject(Store);
   const actions$ = inject(Actions);
   return store.select('recipes').pipe(
     take(1),
@@ -41,7 +58,11 @@ export const recipesResolver = (
         // return actions$.pipe(ofType(RecipesActions.SET_RECIPES), take(1));
         // *** new syntax ***
         store.dispatch(RecipesActions.fetchRecipes());
-        return actions$.pipe(ofType(RecipesActions.setRecipes), take(1));
+        return actions$.pipe(
+          ofType(RecipesActions.setRecipes),
+          take(1),
+          map((setRecipesAction) => setRecipesAction.recipes)
+        );
       } else {
         return of(recipes);
       }

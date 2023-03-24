@@ -17,6 +17,6 @@ export class AppComponent implements OnInit {
     // *** old syntax ***
     // this.store.dispatch(new AuthActions.AutoLogin());
     // *** new syntax ***
-    this.store.dispatch(AuthActions.autoLogin());
+    this.store.dispatch(AuthActions.autoLoginStart());
   }
 }

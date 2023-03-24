@@ -6,12 +6,16 @@ export interface State {
   user: User;
   authError: string;
   loading: boolean;
+  loginStarted: boolean;
+  loginAttempted: boolean;
 }
 
 const initialState: State = {
   user: null,
   authError: null,
   loading: false,
+  loginStarted: false,
+  loginAttempted: false,
 };
 
 // *** old syntax ***
@@ -74,26 +78,44 @@ export const authReducer = createReducer(
         user,
         authError: null,
         loading: false,
+        loginStarted: false,
+        loginAttempted: true,
       };
     }
   ),
   on(AuthActions.logout, (state) => ({
     ...state,
     user: null,
+    loginStarted: false,
+    loginAttempted: false,
   })),
   on(AuthActions.loginStart, AuthActions.signupStart, (state) => ({
     ...state,
     authError: null,
     loading: true,
+    loginStarted: true,
+    loginAttempted: false,
   })),
   on(AuthActions.authenticateFail, (state, { error }) => ({
     ...state,
     user: null,
     authError: error,
     loading: false,
+    loginStarted: false,
+    loginAttempted: true,
   })),
   on(AuthActions.clearError, (state) => ({
     ...state,
     authError: null,
+  })),
+  on(AuthActions.autoLoginStart, (state) => ({
+    ...state,
+    loginStarted: true,
+    loginAttempted: false,
+  })),
+  on(AuthActions.autoLoginFail, (state) => ({
+    ...state,
+    loginStarted: false,
+    loginAttempted: true,
   }))
 );
