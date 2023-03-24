@@ -21,13 +21,6 @@ export class AuthService {
 
   constructor(private store: Store<fromAppStore.AppState>) {}
 
-  logout() {
-    localStorage.removeItem('userData');
-    if (this.tokenExpirationTimer) {
-      clearTimeout(this.tokenExpirationTimer);
-    }
-  }
-
   setLogoutTimer(expirationDuration: number) {
     this.tokenExpirationTimer = setTimeout(() => {
       // *** old syntax ***
