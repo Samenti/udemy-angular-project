@@ -1,0 +1,17 @@
+// ng-universal: this is the server-side version of our tsconfig,
+// specifying the use of the commonJS module system
+
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/app-server",
+    "module": "commonjs",
+    "types": ["node"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "files": ["src/main.server.ts", "server.ts"],
+  "angularCompilerOptions": {
+    "entryModule": "./src/app/app.server.module#AppServerModule"
+  }
+}

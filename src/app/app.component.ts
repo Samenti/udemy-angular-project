@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import * as fromAppStore from './store/app.reducer';
 import * as AuthActions from './auth/store/auth.actions';
 import { Store } from '@ngrx/store';
+import { isPlatformBrowser } from '@angular/common';
 
 export type CurrentTab = 'shopping-list' | 'recipes';
 
@@ -11,12 +12,17 @@ export type CurrentTab = 'shopping-list' | 'recipes';
   styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-  constructor(private store: Store<fromAppStore.AppState>) {}
+  constructor(
+    private store: Store<fromAppStore.AppState>,
+    @Inject(PLATFORM_ID) private platformId
+  ) {}
 
   ngOnInit(): void {
-    // *** old syntax ***
-    // this.store.dispatch(new AuthActions.AutoLogin());
-    // *** new syntax ***
-    this.store.dispatch(AuthActions.autoLoginStart());
+    if (isPlatformBrowser(this.platformId)) {
+      // *** old syntax ***
+      // this.store.dispatch(new AuthActions.AutoLogin());
+      // *** new syntax ***
+      this.store.dispatch(AuthActions.autoLoginStart());
+    }
   }
 }
