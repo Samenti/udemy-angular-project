@@ -21,7 +21,7 @@ import { RecipesEffects } from './recipes/store/recipes.effects';
   declarations: [AppComponent, HeaderComponent],
   // make sure you remove imports of lazy-loaded modules from here
   imports: [
-    BrowserModule,
+    BrowserModule.withServerTransition({ appId: 'serverApp' }),
     HttpClientModule,
     StoreModule.forRoot(fromAppStore.appReducer),
     EffectsModule.forRoot([AuthEffects, RecipesEffects]),
